@@ -1,0 +1,19 @@
+FTPFXP Ruby Gem
+===============
+
+Author: Lee, Alex
+License: Ruby License
+E-mail: alexeen@gmail.com
+Home Page: http://ftpfxp.rubyforge.org/
+Project Page: http://rubyforge.org/projects/ftpfxp
+
+The purpose of this project is to extend the standard Net::FTP
+module by providing Server-to-Server file transfer and SSL/TLS
+secure control and data connection capabilities. SSL/TLS support
+for file transfer using SSCN and CPSV are both supported.
+
+Sample codes are under `./samples/'
+
+For information on the license, read `LICENSE.txt'.
+
+Copyright (C)2006, Alex Lee. All Rights Reserved.
