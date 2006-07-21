@@ -89,10 +89,10 @@ module Net
 
 			# Protection buffer size must be set to 0 since FTP-TLS does
 			# not require this, but it still must be set.
-			voidcmd('PBSZ 0')
+			fxppbsz(0)
 
 			# Set to P since we're using TLS.
-			voidcmd('PROT P')
+			fxpprotp
 			@secure_on = true
 		end
 
@@ -106,6 +106,17 @@ module Net
 		#	Note: Serv-U does not support CPSV.
 		#
 		# :startdoc:
+
+		#
+		# This method sets the protection buffer size.
+		# Usually this is set to 0.
+		#
+		def fxppbsz(size)
+			synchronize do
+				putline("PBSZ #{size}")
+				return getresp
+			end
+		end
 
 		#
 		# This method notifies the server to start using protection mode.
@@ -207,7 +218,7 @@ module Net
 		#
 		def fxpto(dst, dstpath, srcpath)
 			if not @secure_on
-				voidcmd('PROT P')
+				fxpprotp
 				@secure_on = true
 			end
 
@@ -232,7 +243,7 @@ module Net
 		#
 		def fxpsscnto(dst, dstpath, srcpath)
 			if not @secure_on
-				voidcmd('PROT P')
+				fxpprotp
 				@secure_on = true
 			end
 
