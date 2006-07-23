@@ -3,7 +3,7 @@ Gem::manage_gems
 require 'rake/gempackagetask'
 
 PKG_NAME = %q{ftpfxp}
-PKG_VERSION = %q{0.0.2}
+PKG_VERSION = %q{0.0.3}
 
 spec = Gem::Specification.new do |s|
 	s.platform = Gem::Platform::RUBY
