@@ -142,10 +142,11 @@ module Net
 			dst.fxpsetport(ports)
 			dst.fxpstor(dstpath)
 			fxpretr(srcpath)
-			resp = fxpwait
-			raise FTPFXPSrcSiteError unless '226' == resp[0,3]
-			resp = dst.fxpwait
-			raise FTPFXPDstSiteError unless '226' == resp[0,3]
+			resp = {}
+			resp[:srcresp] = fxpwait
+			raise FTPFXPTLSSrcSiteError unless '226' == resp[:srcresp][0,3]
+			resp[:dstresp] = dst.fxpwait
+			raise FTPFXPTLSDstSiteError unless '226' == resp[:dstresp][0,3]
 			return resp
 		end
 
