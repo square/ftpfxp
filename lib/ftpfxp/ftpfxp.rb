@@ -34,7 +34,8 @@ module Net
 	# - #fxpwait
 	# - #fxpto
 	# - #fastlist
-	# - #fileExists
+	# - #file_exists
+	# - #path_exists
   #
 	class FTPFXP < FTP
 		#
@@ -170,14 +171,27 @@ module Net
 		#
 		# Check if a file path exists.
 		#
-		def fileExists(path)
+		def file_exists(path)
 			resp = fastlist(path)
-			stats = false
+			status = false
 			resp.each do |entry|
 				next if '213' == entry[0,3] # Skip these useless lines.
 				status = true if '-rw' == entry[0,3]
 			end
-			return resp
+			return status
+		end
+
+		#
+		# Check if a path exists.
+		#
+		def path_exists(path)
+			resp = fastlist(path)
+			status = false
+			resp.each do |entry|
+				next if '213' == entry[0,3] # Skip these useless lines.
+				status = true
+			end
+			return status
 		end
 	end
 end
