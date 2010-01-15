@@ -41,6 +41,8 @@ module Net
 
 		# When +true+, transfers are performed securely. Default: +true+.
 		attr_reader :secure_on
+		attr_accessor :client_cert
+		attr_accessor :client_key
 
 		#
 		# A synonym for <tt>FTPFXPTLS.new</tt>. but with a manditory host parameter.
@@ -70,10 +72,7 @@ module Net
 		#
 		def login(user = "anonymous", passwd = nil, mode = 0, acct = nil)
 			# SSL/TLS context.
-			ctx = OpenSSL::SSL::SSLContext.new
-			ctx.verify_mode = OpenSSL::SSL::VERIFY_NONE
-			ctx.key = nil
-			ctx.cert = nil
+			ctx = create_ssl_context()
 			if 1 == mode
 				voidcmd('AUTH SSL')
 			else
@@ -272,10 +271,7 @@ module Net
 				host, port = makepasv
 
 				if @secure_on
-					ctx = OpenSSL::SSL::SSLContext.new
-					ctx.verify_mode = OpenSSL::SSL::VERIFY_NONE
-					ctx.key = nil
-					ctx.cert = nil
+					ctx = create_ssl_context()
 
 					# A secure data connection is required.
 					conn = OpenSSL::SSL::SSLSocket.new(open_socket(host, port), ctx)
@@ -311,10 +307,7 @@ module Net
 				end
 
 				if @secure_on
-					ctx = OpenSSL::SSL::SSLContext.new
-					ctx.verify_mode = OpenSSL::SSL::VERIFY_NONE
-					ctx.key = nil
-					ctx.cert = nil
+					ctx = create_ssl_context()
 
 					# Secure server connection required.
 					sslsock = OpenSSL::SSL::SSLSocket.new(sock, ctx)
@@ -332,6 +325,14 @@ module Net
 			return conn
 		end
 		private :transfercmd
+
+		def create_ssl_context
+			ctx = OpenSSL::SSL::SSLContext.new
+			ctx.verify_mode = OpenSSL::SSL::VERIFY_NONE
+			ctx.key = instance_variable_defined?(:@client_key) ? @client_key : nil
+			ctx.cert = instance_variable_defined?(:@client_cert) ? @client_cert : nil
+			ctx
+		end
 	end
 end
 
