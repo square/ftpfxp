@@ -51,15 +51,18 @@ module Net
 		# when the block finishes, or when an exception is raised.
 		#
 		def FTPFXPTLS.open(host, user = nil, passwd = nil, mode = 0, acct = nil)
+			ftpfxptls = new(host)
+			if user
+				ftpfxptls.login(user, passwd, mode, acct)
+			end
 			if block_given?
-				ftpfxptls = new(host, user, passwd, mode, acct)
 				begin
 					yield ftpfxptls
 				ensure
 					ftpfxptls.close
 				end
 			else
-				new(host, user, passwd, mode, acct)
+				ftpfxptls
 			end
 		end
 
