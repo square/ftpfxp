@@ -39,6 +39,9 @@ module Net
 	class FTPFXPTLS < FTPFXP
 		include OpenSSL
 
+		MODE_TLS_AUTH = 0
+		MODE_SSL_AUTH = 1
+
 		# When +true+, transfers are performed securely. Default: +true+.
 		attr_reader :secure_on
 		attr_accessor :client_cert
@@ -50,16 +53,19 @@ module Net
 		# If a block is given, it is passed the +FTP+ object, which will be closed
 		# when the block finishes, or when an exception is raised.
 		#
-		def FTPFXPTLS.open(host, user = nil, passwd = nil, mode = 0, acct = nil)
+		def FTPFXPTLS.open(host, user = nil, passwd = nil, mode = MODE_TLS_AUTH, acct = nil)
+			ftpfxptls = new(host)
+			if user
+				ftpfxptls.login(user, passwd, mode, acct)
+			end
 			if block_given?
-				ftpfxptls = new(host, user, passwd, mode, acct)
 				begin
 					yield ftpfxptls
 				ensure
 					ftpfxptls.close
 				end
 			else
-				new(host, user, passwd, mode, acct)
+				ftpfxptls
 			end
 		end
 
@@ -67,13 +73,13 @@ module Net
 		# This method authenticates a user with the ftp server connection.
 		# If no +username+ given, defaults to +anonymous+.
 		# If no +mode+ given, defaults to +TLS AUTH+.
-		# - mode = 0 for +TLS+ (default)
-		# - mode = 1 for +SSL+
+		# - mode = MODE_TLS_AUTH for +TLS+ (default)
+		# - mode = MODE_SSL_AUTH for +SSL+
 		#
-		def login(user = "anonymous", passwd = nil, mode = 0, acct = nil)
+		def login(user = "anonymous", passwd = nil, mode = MODE_TLS_AUTH, acct = nil)
 			# SSL/TLS context.
 			ctx = create_ssl_context()
-			if 1 == mode
+			if MODE_SSL_AUTH == mode
 				voidcmd('AUTH SSL')
 			else
 				voidcmd('AUTH TLS')
