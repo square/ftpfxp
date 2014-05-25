@@ -145,9 +145,9 @@ module Net
 			fxpretr(srcpath)
 			resp = {}
 			resp[:srcresp] = fxpwait
-			raise FTPFXPTLSSrcSiteError unless '226' == resp[:srcresp][0,3]
+			raise FTPFXPSrcSiteError unless '226' == resp[:srcresp][0,3]
 			resp[:dstresp] = dst.fxpwait
-			raise FTPFXPTLSDstSiteError unless '226' == resp[:dstresp][0,3]
+			raise FTPFXPDstSiteError unless '226' == resp[:dstresp][0,3]
 			return resp
 		end
 
